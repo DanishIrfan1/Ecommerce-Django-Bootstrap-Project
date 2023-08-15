@@ -1,8 +1,12 @@
+import requests
 from django.shortcuts import HttpResponse
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+
+from carts.models import Cart, CartItem
+from carts.views import _cart_id
 from .forms import RegistrationForm
 from .models import Account
 from django.contrib import messages, auth
@@ -62,9 +66,60 @@ def login(request):
         user = authenticate(request,email=email,password=password)
 
         if user is not None:
+            try: # this is used to check if the user has a cart_item in the cart when he is not logged in and clicks on the login button
+                cart = Cart.objects.get(cart_id=_cart_id(request)) # get the cart using the _cart_id present in the session
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists() # check if the cart_item already exists or not
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart) # get the cart_item using the cart
+                    # Getting the product variations by cart id
+                    # this below code written because to grouping the cart_item by the product variation after the user is logged in
+                    product_variation = []
+                    for item in cart_item:
+                        variation = item.variation.all() # get all the variation of the cart_item
+                        product_variation.append(list(variation)) # append the variation in the product_variation
+
+                    # Get the cart items from the user to access his product variations
+                    cart_item = CartItem.objects.filter(user=user) # get the cart_item using the user
+                    existing_variation_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variation.all() # get all the variation of the cart_item
+                        existing_variation_list.append(list(existing_variation)) # append the variation in the existing_variation_list
+                        id.append(item.id) # append the id in the id list
+
+                    # product_variation[1,2,3,4,6] -> database
+                    # existing_variation_list[3,4,7] -> product_variation list
+                    # now getting common variation from the above two list and increase the quantity of the cart_item
+                    # id -> database
+
+                    for pr in product_variation: # iterate over the product_variation
+                        if pr in existing_variation_list: # if the product_variation is in the existing_variation_list
+                            index = existing_variation_list.index(pr) # get the index of the existing_variation_list
+                            item_id = id[index] # get the id using the index
+                            item = CartItem.objects.get(id=item_id) # get the cart_item using the id
+                            item.quantity += 1 # increase the quantity by 1
+                            item.user = user # set the user
+                            item.save() # save the cart_item
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart) # get the cart_item using the cart
+                            for item in cart_item: # iterate over the cart_item
+                                item.user = user # set the user
+                                item.save() # save the cart_item
+            except:
+                pass
             auth.login(request,user)
             messages.success(request,'You are now logged in')
-            return redirect('dashboard')
+            url = request.META.get('HTTP_REFERER') # this is used to get the previous url
+            try:
+                query = requests.utils.urlparse(url).query # this is used to get the query string from the url
+                # next=/cart/checkout/
+                params = dict(x.split('=') for x in query.split('&')) # this is used to convert the query string to dictionary, split the query string by & and then split the key and value by =
+                if 'next' in params: # this is used to check if the next is present in the params
+                    nextPage = params['next'] # this is used to get the next page
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard')
+
         else:
             messages.error(request,'Invalid login credentials')
             return redirect('login')

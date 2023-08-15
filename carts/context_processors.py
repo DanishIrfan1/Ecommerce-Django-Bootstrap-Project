@@ -8,14 +8,11 @@ def counter(request):  # counter() is used to count the number of items in the c
         return {}
     else:
         try:
-            # if request.user.is_authenticated: # check if the user is authenticated or not
-            #     cart_items = CartItem.objects.filter(user=request.user) # if user is authenticated, then get the cart items with the user
-            # else:
-            cart = Cart.objects.filter(
-                cart_id=_cart_id(request))  # get the cart using the cart_id present in the session
-            # print("Cart", cart)
-            cart_items = CartItem.objects.all().filter(cart=cart[
-                                                            :1])  # get the cart_item using the cart object, the cart object is sliced because the cart object is a list
+            cart = Cart.objects.filter(cart_id=_cart_id(request))  # get the cart using the cart_id present in the session
+            if request.user.is_authenticated: # check if the user is authenticated or not
+                cart_items = CartItem.objects.all().filter(user=request.user) # if user is authenticated, then get the cart items with the user
+            else:
+                cart_items = CartItem.objects.all().filter(cart=cart[:1])  # get the cart_item using the cart object, the cart object is sliced because the cart object is a list
             for cart_item in cart_items:  # loop through the cart items
                 cart_count += cart_item.quantity  # add the quantity of each cart item to the cart_count
         except Cart.DoesNotExist:
