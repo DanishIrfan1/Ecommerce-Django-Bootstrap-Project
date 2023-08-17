@@ -24,7 +24,7 @@ def store(request, category_slug=None):  # category_slug=None is used to make th
         paged_products = paginator.get_page(page)  # get the products for the page number
         products_count = products.count()
     else:  # if category_slug is None, then all the products are stored in products
-        products = Product.objects.all().filter(is_available=True).order_by(id) # Order_by(id) because we remove warning in the console "UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list: <class 'store.models.Product'> QuerySet."
+        products = Product.objects.all().filter(is_available=True).order_by("id") # Order_by(id) because we remove warning in the console "UnorderedObjectListWarning: Pagination may yield inconsistent results with an unordered object_list: <class 'store.models.Product'> QuerySet."
         paginator = Paginator(products, 6)  # 6 is the number of products per page
         page = request.GET.get('page')  # get the page number
         paged_products = paginator.get_page(page)  # get the products for the page number
