@@ -72,3 +72,18 @@ class Account(AbstractBaseUser):  # AbstractBaseUser is used to create a custom 
     def has_module_perms(self,
                          add_label):  # This method is used to check if the user has permissions to view the app or not
         return True
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(Account, on_delete=models.CASCADE)  # OneToOneField is used to link the user with the user profile, OneToOneField used because one user can have only one profile
+    address_line_1 = models.CharField(max_length=100, blank=True)  # blank=True is used to make the field optional
+    address_line_2 = models.CharField(max_length=100, blank=True)  # blank=True is used to make the field optional
+    profile_picture = models.ImageField(blank=True, upload_to='userprofile')  # blank=True is used to make the field optional
+    city = models.CharField(max_length=20, blank=True)  # blank=True is used to make the field optional
+    state = models.CharField(max_length=20, blank=True)  # blank=True is used to make the field optional
+    country = models.CharField(max_length=20, blank=True)  # blank=True is used to make the field optional
+
+    def __str__(self):  # This method is used to display the email of the user in the admin panel instead of user object
+        return self.user.first_name
+
+    def full_address(self):  # This method is used to display the full address of the user
+        return f'{self.address_line_1} {self.address_line_2}'

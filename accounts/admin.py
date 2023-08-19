@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Account
+from django.utils.html import format_html
+
+from .models import Account, UserProfile
 
 
 # Register your models here.
@@ -17,4 +19,14 @@ class AccountAdmin(UserAdmin):
     fieldsets = ()  # fieldsets is used to display the fields in the admin panel
 
 
+class UserProfileAdmin(admin.ModelAdmin):
+    def thumbnail(self, object):
+        return format_html('<img src="{}" width="40" style="border-radius:50%;" />'.format(
+            object.profile_picture.url))  # format_html is used to format the html code
+
+    thumbnail.short_description = 'Profile Picture'  # short_description is used to display the name of the field in the admin panel
+    list_display = ('thumbnail', 'user', 'city', 'state', 'country')
+
+
 admin.site.register(Account, AccountAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
