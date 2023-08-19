@@ -60,6 +60,8 @@ class Account(AbstractBaseUser):  # AbstractBaseUser is used to create a custom 
 
     objects = MyAccountManager()  # objects is used to create a new user model object
 
+    def full_name(self):  # This method is used to display the full name of the user
+        return f'{self.first_name} {self.last_name}'
     def __str__(self):  # This method is used to display the email of the user in the admin panel instead of user object
         return self.email
 
