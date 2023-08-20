@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from decouple import \
+    config  # This is the decouple package, it is used to hide the secret key, email, password and other sensitive information
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,10 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r%63p*h1m#$rzo+e)*ohh!56_at3u2demfqb=%a7^ld$+$70%g'
+SECRET_KEY = config("SECRET_KEY")  # This is the secret key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=True,
+               cast=bool)  # This is the debug mode, cast=bool is used to convert the string to boolean because by default it is string
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'orders',
+    # 'admin_honeypot', # This is the admin honeypot package, it is used to prevent the admin login page from being accessed by anyone, it is installed using pip install django-admin-honeypot
 ]
 
 MIDDLEWARE = [
@@ -50,7 +54,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+'django_session_timeout.middleware.SessionTimeoutMiddleware', # This is the session timeout middleware, installed using pip install django-session-timeout
 ]
+from django.urls import reverse_lazy
+SESSION_EXPIRE_SECONDS = 30
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True # This is the session expire time, it is set to 30 minutes, if the user is inactive for 30 minutes then the session will expire
+SESSION_TIMEOUT_REDIRECT = reverse_lazy('login') # This is the redirect url after the session expires
 
 ROOT_URLCONF = 'GreatKart.urls'
 
@@ -141,12 +150,12 @@ MESSAGE_TAGS = {
 }
 
 # Email Settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'danishuoc@gmail.com'
-EMAIL_HOST_PASSWORD = 'kporajnyqzsukown'
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT", cast=int)
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 
 # paypal settings
 # SECURE_CROSS_ORIGIN_OPENER_POLICY = True

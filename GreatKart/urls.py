@@ -21,7 +21,11 @@ from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-                  path('admin/', admin.site.urls),
+                  # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
+    #AT this version of Django we are not able to use admin_honeypot because it not support Django 4.2.4
+                  # This is the admin honeypot package, it is used to prevent the admin login page from being accessed by anyone, it is installed using pip install django-admin-honeypot
+                  path('secureloginasadmin/', admin.site.urls),
+                  # i use secureloginasadmin to prevent the admin login page from being accessed by anyone
                   path('', views.home, name='home'),
                   path('store/', include('store.urls')),
                   path('cart/', include('carts.urls')),

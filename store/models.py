@@ -77,3 +77,15 @@ class ReviewRating(models.Model): # for product review and rating
 
     def __str__(self):
         return self.subject
+
+
+class ProductGallery(models.Model): # for product gallery
+    product = models.ForeignKey(Product, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='store/products', max_length=255) # max_length is used to limit the length of the image name
+
+    def __str__(self):
+        return self.product.product_name
+
+    class Meta: # for product gallery to give plural name
+        verbose_name = 'Product Gallery'
+        verbose_name_plural = 'Product Gallery'
