@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")  # This is the secret key
 DEBUG = config("DEBUG", default=True,
                cast=bool)  # This is the debug mode, cast=bool is used to convert the string to boolean because by default it is string
 
-ALLOWED_HOSTS = ['django-env.eba-fahre4df.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = [' greatkart-course-env.eba-xjhmrz6q.us-west-2.elasticbeanstalk.com']
 
 # Application definition
 
