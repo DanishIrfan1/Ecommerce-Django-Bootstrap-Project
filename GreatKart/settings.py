@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")  # This is the secret key
 DEBUG = config("DEBUG", default=True,
                cast=bool)  # This is the debug mode, cast=bool is used to convert the string to boolean because by default it is string
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app']
 
 # Application definition
 
@@ -57,7 +57,7 @@ MIDDLEWARE = [
 'django_session_timeout.middleware.SessionTimeoutMiddleware', # This is the session timeout middleware, installed using pip install django-session-timeout
 ]
 from django.urls import reverse_lazy
-SESSION_EXPIRE_SECONDS = 30
+SESSION_EXPIRE_SECONDS = 3600
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True # This is the session expire time, it is set to 30 minutes, if the user is inactive for 30 minutes then the session will expire
 SESSION_TIMEOUT_REDIRECT = reverse_lazy('login') # This is the redirect url after the session expires
 
@@ -185,3 +185,17 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 # paypal settings
 # SECURE_CROSS_ORIGIN_OPENER_POLICY = True
 # SECURE_REFERRER_POLICY = True
+
+
+# AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+# AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+# AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+# AWS_S3_SIGNATURE_NAME = config("AWS_S3_SIGNATURE_NAME")
+# AWS_S3_REGION_NAME = config("AWS_S3_REGION_NAME")
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL =  None
+# AWS_S3_VERITY = True
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+# scp -i C:\Users\DanishIrfan\Downloads\Danikhan.pem E:\Django\GreatKart\.env* user@public-dns-name:/home/ubuntu/Ecommerce-Django-Bootstrap-Project
