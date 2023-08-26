@@ -27,7 +27,7 @@ SECRET_KEY = config("SECRET_KEY")  # This is the secret key
 DEBUG = config("DEBUG", default=True,
                cast=bool)  # This is the debug mode, cast=bool is used to convert the string to boolean because by default it is string
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app','.now.sh']
 
 # Application definition
 
