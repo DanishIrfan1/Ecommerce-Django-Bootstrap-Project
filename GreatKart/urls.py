@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
+from django.views.generic import RedirectView
 
 urlpatterns = [
                   # path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
@@ -33,5 +34,8 @@ urlpatterns = [
 
                   # orders
                   path('orders/', include('orders.urls')),
+
+                # favicon
+                    path('favicon.ico', RedirectView.as_view(url='/static/images/favicon.ico')), # This is the favicon, it is the icon that appears in the browser tab, it is installed using pip install django-favicon
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
