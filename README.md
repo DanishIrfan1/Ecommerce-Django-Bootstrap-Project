@@ -1,1 +1,1 @@
-# Ecommerce-Django-Bootstrap-Project
+<!-- # Ecommerce-Django-Bootstrap-Project -->
